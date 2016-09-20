@@ -25,7 +25,6 @@ class PostsList extends React.Component {
         loadMore: PropTypes.func,
         emptyText: PropTypes.string,
         showSpam: PropTypes.bool,
-        global: PropTypes.object.isRequired,
         fetchState: PropTypes.func.isRequired,
         pathname: PropTypes.string,
     };
@@ -52,15 +51,7 @@ class PostsList extends React.Component {
         this.attachScrollListener();
     }
 
-    componentWillUnmount() {
-        this.detachScrollListener();
-        window.removeEventListener('popstate', this.onBackButton);
-        const post_overlay = document.getElementById('post_overlay');
-        if (post_overlay) post_overlay.removeEventListener('click', this.closeOnOutsideClick);
-        document.getElementsByTagName('body')[0].className = "";
-    }
-
-    componentWillUpdate(nextProps) {
+    componentWillUpdate() {
         if (this.state.showPost && (window.location.pathname !== this.post_url)) {
             this.setState({showPost: null});
         }
@@ -79,6 +70,14 @@ class PostsList extends React.Component {
         if (!this.state.showPost) {
             document.getElementsByTagName('body')[0].className = '';
         }
+    }
+
+    componentWillUnmount() {
+        this.detachScrollListener();
+        window.removeEventListener('popstate', this.onBackButton);
+        const post_overlay = document.getElementById('post_overlay');
+        if (post_overlay) post_overlay.removeEventListener('click', this.closeOnOutsideClick);
+        document.getElementsByTagName('body')[0].className = "";
     }
 
     onBackButton() {
@@ -119,7 +118,7 @@ class PostsList extends React.Component {
         }
 
         // Detect if we're in mobile mode (renders larger preview imgs)
-        var mq = window.matchMedia('screen and (max-width: 39.9375em)');
+        const mq = window.matchMedia('screen and (max-width: 39.9375em)');
         if(mq.matches) {
             this.setState({thumbSize: 'mobile'})
         } else {
@@ -146,7 +145,7 @@ class PostsList extends React.Component {
     }
 
     render() {
-        const {posts, loading, category, emptyText, global} = this.props;
+        const {posts, loading, category, emptyText} = this.props;
         const {comments} = this.props
         const {thumbSize, showPost} = this.state
         if (!loading && !posts.length && emptyText) {
@@ -203,7 +202,7 @@ export default connect(
             if(!(ignore || hide) || showSpam) // rephide
                 comments.push({item, ignore, netVoteSign, authorRepLog10})
         })
-        return {...props, comments, global: state.global, pathname};
+        return {...props, comments, pathname};
     },
     dispatch => ({
         fetchState: (pathname) => {
