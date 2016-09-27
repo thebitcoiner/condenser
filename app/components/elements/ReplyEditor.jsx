@@ -57,6 +57,7 @@ class ReplyEditor extends React.Component {
         reply: React.PropTypes.func.isRequired,
         setMetaLink: React.PropTypes.func.isRequired,
         clearMetaData: React.PropTypes.func.isRequired,
+        showPostingGuide: React.PropTypes.func.isRequired,
         setMetaData: React.PropTypes.func.isRequired,
         metaLinkData: React.PropTypes.object,
         state: React.PropTypes.object.isRequired,
@@ -266,6 +267,11 @@ class ReplyEditor extends React.Component {
         localStorage.setItem('replyEditorData-rte', !this.state.rte)
     }
 
+    onShowPostingGuide = (e) => {
+        e.preventDefault();
+        this.props.showPostingGuide();
+    }
+
     toggleAllSteemPower = () => {
         this.setState({allSteemPower: !this.state.allSteemPower})
     }
@@ -277,7 +283,7 @@ class ReplyEditor extends React.Component {
             category: this.props.category,
             body: this.props.body,
         }
-        const {onCancel, autoVoteOnChange} = this
+        const {onShowPostingGuide, onCancel, autoVoteOnChange} = this
         const {title, category, body, autoVote} = this.props.fields
         const {
             reply, username, hasCategory, isStory, formId, noImage,
@@ -372,6 +378,7 @@ class ReplyEditor extends React.Component {
                             }
                             {!loading && !this.props.onCancel && <button className="button hollow no-border" tabIndex={5} disabled={submitting} onClick={onCancel}>Clear</button>}
                             {isStory && !isEdit && <div className="float-right">
+                                <a href="#" onClick={onShowPostingGuide}>Steemit Posting Guide</a><br />
                                 <small onClick={this.toggleAllSteemPower} title="Leave this unchecked to receive 1/2 your reward in Steem Power and 1/2 in Steem Dollars">Pay me 100% in Steem Power</small>
                                 &nbsp;&nbsp;
                                 <input type="checkbox" onChange={this.toggleAllSteemPower} checked={allSteemPower} />
@@ -448,6 +455,9 @@ export default formId => reduxForm(
 
     // mapDispatchToProps
     dispatch => ({
+        showPostingGuide: () => {
+            dispatch({type: 'global/SHOW_DIALOG', payload: {name: 'postingGuide'}});
+        },
         setMetaLink: (/*id, link*/) => {
             // TODO
             // dispatch(g.actions.requestMeta({id, link}))
