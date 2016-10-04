@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import SvgImage from 'app/components/elements/SvgImage';
 import AddToWaitingList from 'app/components/modules/AddToWaitingList';
 
-export default class SignUp extends React.Component {
+class SignUp extends React.Component {
     constructor() {
         super();
         this.state = {waiting_list: false};
@@ -17,7 +17,7 @@ export default class SignUp extends React.Component {
                 </div>
             </div>;
         }
-        
+
         if (this.props.serverBusy || $STM_Config.disable_signups) {
             return <div className="row">
                 <div className="column callout" style={{margin: '20px', padding: '40px'}}>
